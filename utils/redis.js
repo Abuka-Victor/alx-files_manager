@@ -12,7 +12,9 @@ class RedisClient {
 
   // check connection status and report
   isAlive() {
-    if (this.client.connected) return true;
+    if (this.client.connected) {
+      return true;
+    }
     return false;
   }
 
@@ -25,8 +27,9 @@ class RedisClient {
 
   // set key value pair to redis server
   async set(key, value, time) {
-    const redisSetex = promisify(this.client.setex).bind(this.client);
-    await redisSetex(key, time, value);
+    const redisSet = promisify(this.client.set).bind(this.client);
+    await redisSet(key, value);
+    await this.client.expire(key, time);
   }
 
   // del key vale pair from redis server
